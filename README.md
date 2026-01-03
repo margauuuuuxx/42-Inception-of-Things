@@ -138,4 +138,36 @@ If you encounter errors with VirtualBox on Mac Silicon:
 
 ## 📚 Learning Resources
 
-- YouTube Playlist: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
+- YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
+
+---
+
+## ✅ K3s Verification
+
+### Checking K3s Installation
+
+SSH into your VM and verify the service:
+
+```bash
+sudo systemctl status k3s
+```
+
+Expected output: `Active: active (running)`
+
+### Viewing Cluster Status
+
+**On Server Node:**
+```bash
+sudo k3s kubectl get nodes
+```
+
+Expected output:
+```
+NAME        STATUS   ROLES           AGE    VERSION
+marloncos   Ready    control-plane   5m3s   v1.34.3+k3s1
+```
+
+**On Agent Node:**
+```bash
+k3s kubectl get nodes
+``` 

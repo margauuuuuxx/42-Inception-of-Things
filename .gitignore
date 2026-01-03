@@ -9,6 +9,10 @@
 *.nvram
 *.log
 
+# K3s secrets
+node-token
+k3s.yaml
+
 # macOS
 .DS_Store
 
