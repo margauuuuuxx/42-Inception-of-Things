@@ -7,15 +7,17 @@
 
 ---
 
-## 🛠️ Vagrant Commands - VM Management
+## 🛠️ Vagrant Commands
 
 ### Basic VM Operations
 
 | Command | Description |
 |---------|-------------|
 | `vagrant init` | Create a new Vagrantfile (ruby) |
+| `vagrant validate` | Check Vagrantfile correctness |
 | `vagrant status` | Show status of the VMs in the current Vagrantfile |
 | `vagrant global-status` | Show status of all Vagrant VMs on the system |
+| `vagrant global-status --prune` | Clean up stale Vagrant entries |
 | `vagrant up` | Creates all VMs |
 | `vagrant up --provider=vmware_desktop` | Start vagrant with VMWare (for Mac Silicon compatibility) |
 | `vagrant halt` | Stop/shutdown VM gracefully |
@@ -28,14 +30,19 @@
 | `vagrant ssh-config` | Outputs OpenSSH valid config to connect to the VMs via SSH |
 | `vagrant provision` | Re-run provisioning scripts |
 | `vagrant package` | Packages a running virtual env into a reusable box |
+| `vagrant up && vagrant ssh` | Start and immediately SSH in |
+| `vagrant halt && vagrant destroy -f` | Stop and delete |
 
 ### Snapshot Management
+
+> 📂 Snapshot location: `~/.vagrant/machines/<machine name>/<snapshot name>`
 
 | Command | Description |
 |---------|-------------|
 | `vagrant snapshot save NAME` | Create a snapshot |
 | `vagrant snapshot list` | List all snapshots |
 | `vagrant snapshot restore NAME` | Restore a snapshot |
+| `vagrant snapshot delete NAME` | Delete a snapshot |
 
 ### Box Management
 
@@ -44,23 +51,30 @@
 | Command | Description |
 |---------|-------------|
 | `vagrant box list` | List all boxes |
-| `vagrant box remove <box name>` | Remove the wrong box from cache |
-| `vagrant box prune` | Remove old box versions |
 | `vagrant box add` | Adds a box to local box repo |
+| `vagrant box remove <box name>` | Remove the wrong box from cache |
 | `vagrant box outdated` | Checks if any boxes in local repo is outdated |
+| `vagrant box prune` | Remove old box versions |
 | `vagrant box repackage` | Repackages a box with a new name & metadata |
 
-### Useful Combinations
+### Plugin Management
+
+> 🔌 Finding plugins: https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins  
+> 📂 Plugins location: `~/.vagrant.d/`
 
 | Command | Description |
 |---------|-------------|
-| `vagrant up && vagrant ssh` | Start and immediately SSH in |
-| `vagrant halt && vagrant destroy -f` | Stop and delete |
-| `vagrant global-status --prune` | Clean up stale Vagrant entries |
+| `vagrant plugin list` | List installed plugins |
+| `vagrant plugin install NAME` | Install a plugin |
+| `vagrant NAME` | Use the plugin |
+| `vagrant plugin update (NAME)` | Update plugin(s) |
+| `vagrant plugin uninstall NAME` | Uninstall a plugin |
+| `vagrant plugin expunge` | Delete all plugins |
+| `vagrant plugin expunge --reinstall` | Reinstall all expunged plugins |
 
 ---
 
-## ⚙️ VMware CLI Commands - Direct VMware Control
+## ⚙️ VMware CLI Commands
 
 | Command | Description |
 |---------|-------------|
@@ -74,12 +88,39 @@
 
 ---
 
-## 📁 VM Storage Locations
+## 🔍 Checking Port Forwarding
+
+### On the Host
+
+| Method | Command |
+|--------|---------|
+| Using curl | `curl http://localhost:<port>` |
+| Using lsof | `sudo lsof -iTCP:8080 -sTCP:LISTEN` |
+
+### On the Guest
+
+```bash
+sudo systemctl status apache2
+```
+
+---
+
+## 📁 Storage Locations
 
 | Path | Description |
 |------|-------------|
 | `~/.vagrant.d/boxes/` | Where Vagrant stores downloaded boxes |
+| `~/.vagrant.d/` | Plugins location |
 | `.vagrant/` | Local VM metadata (in project directory) |
+| `~/.vagrant/machines/<machine name>/<snapshot name>` | Snapshot location |
+
+---
+
+## 🧰 Additional Tools
+
+### Vagrantfile Generator
+
+Easily generate a Vagrantfile: https://vagrantfile-generator.vercel.app/
 
 ---
 
@@ -93,3 +134,8 @@ If you encounter errors with VirtualBox on Mac Silicon:
 4. Use ARM64 compatible box (e.g., `starboard/ubuntu-arm64-20.04.5`)
 5. Remove lock files if needed: `rm -rf ~/.vagrant.d/boxes/*/lck`
 
+---
+
+## 📚 Learning Resources
+
+- YouTube Playlist: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
