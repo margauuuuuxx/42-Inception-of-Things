@@ -139,6 +139,7 @@ If you encounter errors with VirtualBox on Mac Silicon:
 ## 📚 Learning Resources
 
 - YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
+- Kubernetes for beginners: https://www.youtube.com/watch?v=s_o8dwzRlu4 
 
 ---
 
@@ -171,3 +172,15 @@ marloncos   Ready    control-plane   5m3s   v1.34.3+k3s1
 ```bash
 k3s kubectl get nodes
 ``` 
+
+
+--- NEW INFO
+kubectl get pod --> see all the existing Pods of the cluster
+kubectl apply -f <config.yaml> --> creates the component defined in the config file 
+    THERE'S AN ORDER in which they should be created depending on what component needs what (ex: webapp needs db)
+kubectl get all --> gives all the components of the cluster
+kubectl get configmap --> getting the ConfigMap components
+kubectl get secret --> getting the Secret components 
+kubectl describe <component_name> <component instance> --> retrieving all infos of a particular instanec of a particular component 
+kubectl logs <pod name>
+kubectl get node (-o wide) --> get node info

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels: # additional identifiers of the component 
+    app: mongodb
+spec:
+  replicas: 1
+  selector: # all the pods that match the matchLabels belong to this Deployment
+    matchLabels:
+      app: mongodb
+  # blueprint (= configuration) for the Pods
+  template:
+    metadata:
+      labels: # replicas will have the same label
+        app: mongodb
+    spec: # of the Pods
+      containers:
+      - name: mongodb # replicas will have different names
+        image: mongo:5.0 # browse images on DockerHub
+        ports:
+        - containerPort: 27017 # refer with the Docker image doc
+        env: #name and password of the DB
+        - name: MONGO_INITDB_ROOT_USERNAME # waht the DB expect at initalization
+          value: # used if no Secret
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret # name of the Secret component
+              key: mongodb-user # actual secret we want to retrieve
+        - name: MONGO_INITDB_ROOT_PASSWORD 
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongodb-password  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service # endpoint to access mongodb
+spec:
+  selector:
+    app: mongodb # needs to match the label of the pods that belong to the service 
+  ports:
+    - protocol: TCP
+      port: 27017 # arbitrary but good practice to make it the targetPort
+      targetPort: 27017 # port of the Pods that belong to the Service (= containerPort)

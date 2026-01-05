@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  labels: # additional identifiers of the component 
+    app: webapp
+spec:
+  replicas: 1
+  selector: # all the pods that match the matchLabels belong to this Deployment
+    matchLabels:
+      app: webapp
+  # blueprint (= configuration) for the Pods
+  template:
+    metadata:
+      labels: # replicas will have the same label
+        app: webapp
+    spec: # of the Pods
+      containers:
+      - name: webapp # replicas will have different names
+        image: # browse images on DockerHub
+        ports:
+        - containerPort: 3000 # refer with the Docker image doc
+        env: # because the mock mage was configured so that the acces to the DB are expected as envv
+          - name: USER_NAME # mock
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secret
+                key: mongodb-user
+          - name: USER_PWD # mock
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secret
+                key: mongodb-password 
+          - name: DB_URL # DB endpoint
+            valueFrom: 
+              configMapKeyRef: # retrieve from ConfigMap
+                name: mongodb-config # name of the ConfigMap component
+                key: mongodb-url
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service # endpoint to access mongodb
+spec:
+  type: NodePort # make it external --> accessible from outside (multiple external Service types)
+  selector:
+    app: webapp # needs to match the label of the pods that belong to the service 
+  ports:
+    - protocol: TCP
+      port: 3000 # arbitrary but good practice to make it the targetPort
+      targetPort: 3000 # port of the Pods that belong to the Service (= containerPort)
+      nodePort: 3001 # port to externally access it [30.000 ; 32.767]
