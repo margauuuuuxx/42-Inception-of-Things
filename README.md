@@ -1,13 +1,13 @@
-# 🚀 Inception of Things - Setup Guide
+# Inception of Things - Setup Guide
 
-## 📋 Prerequisites
+## Prerequisites
 
 - First install vagrant
 - **For Mac Silicon (M1/M2/M3):** Install VMware Fusion and vagrant-vmware-desktop plugin
 
 ---
 
-## 🛠️ Vagrant Commands
+## Vagrant Commands
 
 ### Basic VM Operations
 
@@ -35,7 +35,7 @@
 
 ### Snapshot Management
 
-> 📂 Snapshot location: `~/.vagrant/machines/<machine name>/<snapshot name>`
+> Snapshot location: `~/.vagrant/machines/<machine name>/<snapshot name>`
 
 | Command | Description |
 |---------|-------------|
@@ -46,7 +46,7 @@
 
 ### Box Management
 
-> 📦 Boxes stored in `~/.vagrant.d/boxes`
+> Boxes stored in `~/.vagrant.d/boxes`
 
 | Command | Description |
 |---------|-------------|
@@ -59,8 +59,8 @@
 
 ### Plugin Management
 
-> 🔌 Finding plugins: https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins  
-> 📂 Plugins location: `~/.vagrant.d/`
+> Finding plugins: https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins  
+> Plugins location: `~/.vagrant.d/`
 
 | Command | Description |
 |---------|-------------|
@@ -74,7 +74,7 @@
 
 ---
 
-## ⚙️ VMware CLI Commands
+## VMware CLI Commands
 
 | Command | Description |
 |---------|-------------|
@@ -88,7 +88,7 @@
 
 ---
 
-## 🔍 Checking Port Forwarding
+## Checking Port Forwarding
 
 ### On the Host
 
@@ -105,7 +105,7 @@ sudo systemctl status apache2
 
 ---
 
-## 📁 Storage Locations
+## Storage Locations
 
 | Path | Description |
 |------|-------------|
@@ -116,7 +116,7 @@ sudo systemctl status apache2
 
 ---
 
-## 🧰 Additional Tools
+## Additional Tools
 
 ### Vagrantfile Generator
 
@@ -124,7 +124,7 @@ Easily generate a Vagrantfile: https://vagrantfile-generator.vercel.app/
 
 ---
 
-## 🔧 Troubleshooting Mac Silicon
+## Troubleshooting Mac Silicon
 
 If you encounter errors with VirtualBox on Mac Silicon:
 
@@ -136,14 +136,14 @@ If you encounter errors with VirtualBox on Mac Silicon:
 
 ---
 
-## 📚 Learning Resources
+## Learning Resources
 
 - YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
 - Kubernetes for beginners: https://www.youtube.com/watch?v=s_o8dwzRlu4 
 
 ---
 
-## ✅ K3s Verification
+## K3s Verification
 
 ### Checking K3s Installation
 

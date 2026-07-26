@@ -22,3 +22,12 @@ k3s.yaml
 *.swp
 *.swo
 *~
+
+# Claude Code
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
+
+# Resources 
+subject.pdf
