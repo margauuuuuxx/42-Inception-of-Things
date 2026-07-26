@@ -1,0 +1,15 @@
+Vagrant.configure('2') do |config|
+
+    config.vm.box = "starboard/ubuntu-arm64-20.04.5"
+
+        config.vm.define "marloncoS" do |machine|
+            machine.vm.network "private_network", ip: '192.168.56.110'
+            machine.vm.hostname = "marloncoS"
+            machine.vm.provider "vmware_desktop" do |vm|
+            vm.vmx["displayName"] = "marloncoS"
+            vm.cpus = 1
+            vm.memory = 512
+            end
+            machine.vm.provision :shell, path: "provision_S.sh"
+        end 
+    end 

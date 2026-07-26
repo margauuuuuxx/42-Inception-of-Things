@@ -7,6 +7,65 @@
 
 ---
 
+## How the VMs are actually managed (nobody clicks "New VM")
+
+It's easy to assume Kubernetes-on-a-VM projects start with opening VMware
+Fusion and clicking through a "create new virtual machine" wizard. **That
+never happens here.** Every VM in this repo is created, booted, networked and
+torn down entirely by Vagrant, driven by a single `Vagrantfile`. The role of
+each moving piece:
+
+**The chain, and the metaphor to hang it on:** think of yourself as an
+**architect who never picks up a hammer**. You draw the blueprint
+(`Vagrantfile`: which box/OS, how much RAM/CPU, which IP). You hand it to a
+**general contractor** (`vagrant`), and say one sentence: `vagrant up`. The
+contractor doesn't build anything either — they call the actual **construction
+crew and machinery** that pours concrete and puts up walls: on Apple Silicon
+that crew is **VMware Fusion** (Apple Silicon can't run VirtualBox reliably,
+so Fusion + its ARM64 boxes is the crew we hire instead). Because the
+contractor (Vagrant) and the crew (Fusion) speak different languages, there's
+a **dispatcher radio** sitting between them: a small background service called
+`vagrant-vmware-utility`, listening on `127.0.0.1:9922`. If that radio is off,
+the contractor shouts instructions into dead air — which is exactly what
+happened after months without touching this project: the dispatcher daemon
+had gone quiet and had to be manually reconnected
+(`sudo launchctl bootstrap system /Library/LaunchDaemons/com.vagrant.vagrant-vmware-utility.plist`)
+before `vagrant up` could reach the crew again.
+
+Once the building (VM) is actually standing, you don't commute to the job
+site to work in it. You open a live window straight into the finished office
+from your own desk — that's **VS Code's Remote-SSH**.
+
+### Day-to-day coding workflow
+
+1. `cd p1 && vagrant up` — Vagrant relays the blueprint through the dispatcher
+   to Fusion, which creates/boots `marloncoS` and `marloncoSW` from the cached
+   `starboard/ubuntu-arm64-20.04.5` box. No manual VM setup, every time
+   reproducible from the `Vagrantfile`.
+2. `vagrant ssh-config marloncoS` — prints the `Host` / `HostName` /
+   `IdentityFile` block Vagrant generated for passwordless SSH into that VM.
+3. Add that block to `~/.ssh/config` (or `vagrant ssh-config marloncoS >>
+   ~/.ssh/config`), then in VS Code: Command Palette → **Remote-SSH: Connect
+   to Host** → pick `marloncoS`. VS Code re-opens with the *guest's*
+   filesystem as the workspace — real terminal, real extensions, but every
+   keystroke executes inside the Linux VM, not on the Mac.
+4. The repo folder is also live-synced into the guest at `/vagrant` (Vagrant's
+   default shared folder), so editing files from the host directly (without
+   Remote-SSH) also reflects instantly inside the VM — useful for quick edits
+   without switching windows.
+5. Inside the VM (via the Remote-SSH terminal or `vagrant ssh`), `kubectl` /
+   `k3s kubectl` and `systemctl status k3s` are run directly against the local
+   cluster — see the K3s Verification section below.
+6. When done: `vagrant halt` (keep the VM for next time) or `vagrant destroy`
+   (remove it — rebuildable any time from the `Vagrantfile` alone).
+
+The one thing worth remembering after a long break: if `vagrant up` ever
+fails with `Connection refused ... 127.0.0.1:9922`, the dispatcher radio
+(`vagrant-vmware-utility`) just needs to be told to pick up again — it is not
+a sign anything about the VMs or the project itself is broken.
+
+---
+
 ## Vagrant Commands
 
 ### Basic VM Operations
