@@ -209,7 +209,7 @@ If you encounter errors with VirtualBox on Mac Silicon:
 SSH into your VM and verify the service:
 
 ```bash
-sudo systemctl status k3s
+systemctl status k3s
 ```
 
 Expected output: `Active: active (running)`
@@ -218,18 +218,20 @@ Expected output: `Active: active (running)`
 
 **On Server Node:**
 ```bash
-sudo k3s kubectl get nodes
+kubectl get nodes -o wide
 ```
 
 Expected output:
 ```
 NAME        STATUS   ROLES           AGE    VERSION
-marloncos   Ready    control-plane   5m3s   v1.34.3+k3s1
+marloncoS   Ready    control-plane   5m3s   v1.34.3+k3s1
+marloncoSW  Ready    <none>          3m2s   v1.34.3+k3s1  
 ```
 
 **On Agent Node:**
 ```bash
-k3s kubectl get nodes
+sudo systemctl status k3s-agent 
+curl -k https://192.168.56.110:6443/version
 ``` 
 
 

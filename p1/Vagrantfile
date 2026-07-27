@@ -1,27 +1,44 @@
 Vagrant.configure('2') do |config|
 
-    config.vm.box = "starboard/ubuntu-arm64-20.04.5"
-    
-        config.vm.define "marloncoS" do |machine|
-            machine.vm.network "private_network", ip: '192.168.56.110'
-            machine.vm.hostname = "marloncoS"
-            machine.vm.provider "vmware_desktop" do |vm|
-            vm.vmx["displayName"] = "marloncoS"
-            vm.cpus = 1
-            vm.memory = 512
-            end
-            machine.vm.provision :shell, path: "provision_S.sh"
-        end
+    config.vm.box = "bento/ubuntu-24.04"
 
-        config.vm.define "marloncoSW" do |machine|
-            machine.vm.network "private_network", ip: '192.168.56.111'
-            machine.vm.hostname = "marloncoSW"
-            machine.vm.provider "vmware_desktop" do |vm|
-            vm.vmx["displayName"] = "marloncoSW"
-            vm.cpus = 1
-            vm.memory = 512
-            end
-            machine.vm.provision :shell, path: "provision_SW.sh"
-        end
+    config.vm.provider "vmware_desktop" do |vmware|
+        vmware.memory = 512
+        vmware.cpus = 1
+    end 
+    
+
+    config.vm.define "marloncoS" do |server|
+    
+        server.vm.hostname = "marloncoS"
+
+        server.vm.network "private_network", 
+         ip: '192.168.56.110'
+
+        server.vm.provision "shell", 
+         path: "provision_S.sh"
+        
+        # server.vm.provider "vmware_desktop" do |vmware|
+        #     vmware.vmx["displayName"] = "marloncoS"
+        # end
+
+    end
+
+
+    config.vm.define "marloncoSW" do |worker|
+
+        worker.vm.hostname = "marloncoSW"
+        
+        worker.vm.network "private_network", 
+         ip: '192.168.56.111'
+        
+        worker.vm.provision "shell", 
+         path: "provision_SW.sh"
+         
+        # worker.vm.provider "vmware_desktop" do |vmware|
+        #     vmware.vmx["displayName"] = "marloncoSW"
+        # end
+
+    end
 
 end
