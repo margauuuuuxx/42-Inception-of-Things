@@ -7,7 +7,9 @@
 
 ---
 
-## How the VMs are actually managed (nobody clicks "New VM")
+## Part 1 — Vagrant & VM Management
+
+### How the VMs are actually managed (nobody clicks "New VM")
 
 It's easy to assume Kubernetes-on-a-VM projects start with opening VMware
 Fusion and clicking through a "create new virtual machine" wizard. **That
@@ -36,7 +38,7 @@ Once the building (VM) is actually standing, you don't commute to the job
 site to work in it. You open a live window straight into the finished office
 from your own desk — that's **VS Code's Remote-SSH**.
 
-### Day-to-day coding workflow
+#### Day-to-day coding workflow
 
 1. `cd p1 && vagrant up` — Vagrant relays the blueprint through the dispatcher
    to Fusion, which creates/boots `marloncoS` and `marloncoSW` from the cached
@@ -55,7 +57,7 @@ from your own desk — that's **VS Code's Remote-SSH**.
    without switching windows.
 5. Inside the VM (via the Remote-SSH terminal or `vagrant ssh`), `kubectl` /
    `k3s kubectl` and `systemctl status k3s` are run directly against the local
-   cluster — see the K3s Verification section below.
+   cluster — see the [K3s Verification](#k3s-verification) section below.
 6. When done: `vagrant halt` (keep the VM for next time) or `vagrant destroy`
    (remove it — rebuildable any time from the `Vagrantfile` alone).
 
@@ -64,11 +66,9 @@ fails with `Connection refused ... 127.0.0.1:9922`, the dispatcher radio
 (`vagrant-vmware-utility`) just needs to be told to pick up again — it is not
 a sign anything about the VMs or the project itself is broken.
 
----
+### Vagrant Commands
 
-## Vagrant Commands
-
-### Basic VM Operations
+#### Basic VM Operations
 
 | Command | Description |
 |---------|-------------|
@@ -92,7 +92,7 @@ a sign anything about the VMs or the project itself is broken.
 | `vagrant up && vagrant ssh` | Start and immediately SSH in |
 | `vagrant halt && vagrant destroy -f` | Stop and delete |
 
-### Snapshot Management
+#### Snapshot Management
 
 > Snapshot location: `~/.vagrant/machines/<machine name>/<snapshot name>`
 
@@ -103,7 +103,7 @@ a sign anything about the VMs or the project itself is broken.
 | `vagrant snapshot restore NAME` | Restore a snapshot |
 | `vagrant snapshot delete NAME` | Delete a snapshot |
 
-### Box Management
+#### Box Management
 
 > Boxes stored in `~/.vagrant.d/boxes`
 
@@ -116,9 +116,9 @@ a sign anything about the VMs or the project itself is broken.
 | `vagrant box prune` | Remove old box versions |
 | `vagrant box repackage` | Repackages a box with a new name & metadata |
 
-### Plugin Management
+#### Plugin Management
 
-> Finding plugins: https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins  
+> Finding plugins: https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins
 > Plugins location: `~/.vagrant.d/`
 
 | Command | Description |
@@ -131,9 +131,7 @@ a sign anything about the VMs or the project itself is broken.
 | `vagrant plugin expunge` | Delete all plugins |
 | `vagrant plugin expunge --reinstall` | Reinstall all expunged plugins |
 
----
-
-## VMware CLI Commands
+### VMware CLI Commands
 
 | Command | Description |
 |---------|-------------|
@@ -145,26 +143,22 @@ a sign anything about the VMs or the project itself is broken.
 | `vmrun listSnapshots <path-to-vmx>` | List snapshots |
 | `vmrun snapshot <path-to-vmx> NAME` | Create snapshot |
 
----
+### Checking Port Forwarding
 
-## Checking Port Forwarding
-
-### On the Host
+#### On the Host
 
 | Method | Command |
 |--------|---------|
 | Using curl | `curl http://localhost:<port>` |
 | Using lsof | `sudo lsof -iTCP:8080 -sTCP:LISTEN` |
 
-### On the Guest
+#### On the Guest
 
 ```bash
 sudo systemctl status apache2
 ```
 
----
-
-## Storage Locations
+### Storage Locations
 
 | Path | Description |
 |------|-------------|
@@ -173,17 +167,7 @@ sudo systemctl status apache2
 | `.vagrant/` | Local VM metadata (in project directory) |
 | `~/.vagrant/machines/<machine name>/<snapshot name>` | Snapshot location |
 
----
-
-## Additional Tools
-
-### Vagrantfile Generator
-
-Easily generate a Vagrantfile: https://vagrantfile-generator.vercel.app/
-
----
-
-## Troubleshooting Mac Silicon
+### Troubleshooting Mac Silicon
 
 If you encounter errors with VirtualBox on Mac Silicon:
 
@@ -193,30 +177,30 @@ If you encounter errors with VirtualBox on Mac Silicon:
 4. Use ARM64 compatible box (e.g., `starboard/ubuntu-arm64-20.04.5`)
 5. Remove lock files if needed: `rm -rf ~/.vagrant.d/boxes/*/lck`
 
+### Additional Tools
+
+#### Vagrantfile Generator
+
+Easily generate a Vagrantfile: https://vagrantfile-generator.vercel.app/
+
 ---
 
-## Learning Resources
+## Part 2 — Kubernetes / K3s
 
-- YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
-- Kubernetes for beginners: https://www.youtube.com/watch?v=s_o8dwzRlu4 
+### K3s Verification
 
----
-
-## K3s Verification
-
-### Checking K3s Installation
+#### Viewing Cluster Status
 
 SSH into your VM and verify the service:
 
+**On Server Node:**
 ```bash
 systemctl status k3s
 ```
 
-Expected output: `Active: active (running)`
+Expected output: 
+`Active: active (running)`
 
-### Viewing Cluster Status
-
-**On Server Node:**
 ```bash
 kubectl get nodes -o wide
 ```
@@ -232,16 +216,28 @@ marloncoSW  Ready    <none>          3m2s   v1.34.3+k3s1
 ```bash
 sudo systemctl status k3s-agent 
 curl -k https://192.168.56.110:6443/version
-``` 
+```
 
+### kubectl Command Reference
 
---- NEW INFO
-kubectl get pod --> see all the existing Pods of the cluster
-kubectl apply -f <config.yaml> --> creates the component defined in the config file 
-    THERE'S AN ORDER in which they should be created depending on what component needs what (ex: webapp needs db)
-kubectl get all --> gives all the components of the cluster
-kubectl get configmap --> getting the ConfigMap components
-kubectl get secret --> getting the Secret components 
-kubectl describe <component_name> <component instance> --> retrieving all infos of a particular instanec of a particular component 
-kubectl logs <pod name>
-kubectl get node (-o wide) --> get node info
+| Command | Description |
+|---------|-------------|
+| `kubectl get pod` | List all Pods in the cluster |
+| `kubectl get all` | List all resources (Pods, Services, Deployments, etc.) in the cluster |
+| `kubectl get node -o wide` | List nodes with extra details |
+| `kubectl get configmap` | List ConfigMap resources |
+| `kubectl get secret` | List Secret resources |
+| `kubectl apply -f <config.yaml>` | Create/update the resource(s) defined in the config file |
+| `kubectl describe <resource type> <instance name>` | Show full details of a specific resource instance |
+| `kubectl logs <pod name>` | Show logs for a Pod |
+
+> **Apply order matters.** When a component depends on another (e.g. a webapp
+> that needs a database), apply the dependency first — `kubectl apply -f`
+> does not resolve creation order across files automatically.
+
+---
+
+## Learning Resources
+
+- YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
+- Kubernetes for beginners: https://www.youtube.com/watch?v=s_o8dwzRlu4
