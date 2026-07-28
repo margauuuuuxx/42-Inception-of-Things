@@ -36,6 +36,18 @@ INSTALL_K3S_EXEC="server \
 --write-kubeconfig-mode=644" \
 sh -
 
+# echo "Ensuring k3s waits for clock sync before starting ..."
+
+# mkdir -p /etc/systemd/system/k3s.service.d
+# cat <<EOF > /etc/systemd/system/k3s.service.d/wait-for-time-sync.conf
+# [Unit]
+# After=time-sync.target
+# Wants=time-sync.target
+# EOF
+
+# systemctl daemon-reload
+
+
 echo "Installing kubectl..."
 
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
