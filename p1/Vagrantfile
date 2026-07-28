@@ -16,7 +16,7 @@ Vagrant.configure('2') do |config|
          ip: '192.168.56.110'
 
         server.vm.provision "shell", 
-         path: "provision_S.sh"
+         path: "scripts/provision_S.sh"
         
         # server.vm.provider "vmware_desktop" do |vmware|
         #     vmware.vmx["displayName"] = "marloncoS"
@@ -33,7 +33,7 @@ Vagrant.configure('2') do |config|
          ip: '192.168.56.111'
         
         worker.vm.provision "shell", 
-         path: "provision_SW.sh"
+         path: "scripts/provision_SW.sh"
          
         # worker.vm.provider "vmware_desktop" do |vmware|
         #     vmware.vmx["displayName"] = "marloncoSW"
