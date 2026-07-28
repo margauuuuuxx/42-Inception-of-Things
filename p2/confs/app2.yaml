@@ -20,3 +20,22 @@ spec:
         name: nginx
         resources: {}
 status: {}
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app2
+  name: app2
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: app2
+  type: ClusterIP
+status:
+  loadBalancer: {}

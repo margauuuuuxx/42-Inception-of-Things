@@ -58,12 +58,20 @@ Plan:
             kubectl create deployment app<id> --image=nginx --dry-run=client -o yaml
             for app2:
                 kubectl create deployment app<id> --image=nginx --replicas=3 --dry-run=client -o yaml
-        --> for the Service use : 
+        --> for the Service use inside ssh machine: 
             kubectl expose deployment app<id> --port=80 --target-port=80 --type=ClusterIP --dry-run=client -o yaml
-        and combine both results in one file 
+        copy paste both results in one yaml file 
         --> spec.replicas + spec.template in the Deployment drive the auto-managed ReplicaSet
         1.1. Make the nginx version differentiable for each app 
     2. Create a single Ingress manifest for the whole cluster in p2/confs/: ingress.yaml
     3. Add the command to apply the confs manifests in the provision script
     4. vagrant up
     5. Test the config using curl (and SSH into the server for kubectl checks)
+
+
+getting the cluster IP ssh inside vm:
+    kubectl get svc app1 -o jsonpath='{.spec.clusterIP}'
+
+checking that the full deployment has worked 
+    curl http://<clusterIP>:80
+expected result: default nginx welcome page 
