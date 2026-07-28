@@ -93,3 +93,11 @@ curl -H "Host: app1.com" http://192.168.56.110/
  # should return app1
 curl -H "Host: app2.com" http://192.168.56.110/       
    # should return app2
+
+app1 / app2 — need a /etc/hosts entry first, since your browser can't send a custom Host header the way curl -H does; it needs app1.com/app2.com to actually resolve to 192.168.56.110 before it will even attempt the connection:
+1. Edit your Mac's hosts file (requires sudo, since it's a system file):
+sudo nano /etc/hosts
+1. (or sudo vim /etc/hosts if you prefer vim)
+2. Add these two lines at the bottom:
+192.168.56.110  app1.com
+192.168.56.110  app2.com
