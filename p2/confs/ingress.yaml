@@ -1,0 +1,46 @@
+# This is a single Ingress object 
+# Set of routing RULES that Traefik (the Ingress controller K3s ships by default)
+
+apiVersion: networking.k8s.io/v1   
+kind: Ingress                      
+
+metadata:
+  name: apps-ingress               
+
+spec:
+  # Tells Kubernetes which Ingress controller should implement these rules, optional
+  ingressClassName: traefik  
+
+  # each entry matches requests by their HTTP Host header, NOT by IP or port (those stay identical for every app)
+  rules:
+    - host:     #no host specified so default backend 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix 
+            backend:
+              service:
+                name: app3
+                port:
+                  number: 80
+    - host: app1.com        
+      http:
+        paths:
+          - path: /                 # match everything under the root path
+            pathType: Prefix        # Prefix = match this path and everything below it
+            backend:
+              service:
+                name: app1          # routes matching requests to the app1 Service
+                port:
+                  number: 80
+
+    - host: app2.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app2   
+                port:
+                  number: 80

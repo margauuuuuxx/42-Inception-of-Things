@@ -71,8 +71,8 @@ Plan:
             kubectl expose deployment app<id> --port=80 --target-port=80 --type=ClusterIP --dry-run=client -o yaml
         copy paste both results in one yaml file 
         --> spec.replicas + spec.template in the Deployment drive the auto-managed ReplicaSet
-        1.1. Make the nginx version differentiable for each app 
-    2. Create a single Ingress manifest for the whole cluster in p2/confs/: ingress.yaml
+    2. Create a single Ingress manifest for the whole cluster in p2/confs/: ingress.yaml (implicitely using Traefik)
+    3. Make the nginx version differentiable for each app 
     3. Add the command to apply the confs manifests in the provision script
     4. vagrant up
     5. Test the config using curl (and SSH into the server for kubectl checks)
@@ -81,6 +81,12 @@ Plan:
 getting the cluster IP ssh inside vm:
     kubectl get svc app1 -o jsonpath='{.spec.clusterIP}'
 
-checking that the full deployment has worked 
+checking that the full deployment has worked without any nginx specs
     curl http://<clusterIP>:80
 expected result: default nginx welcome page 
+
+
+ingress tests: 
+curl http://192.168.56.110/                              # should return app3 (default)
+curl -H "Host: app1.com" http://192.168.56.110/           # should return app1
+curl -H "Host: app2.com" http://192.168.56.110/           # should return app2
