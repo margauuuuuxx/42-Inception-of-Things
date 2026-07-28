@@ -10,8 +10,17 @@ kubectl apply -f <file>.yaml
     result --> deployment.apps/<name> created, service/<name> created
     (the resource kind + API group in the output depends on the "kind" defined in each YAML document)
 
+checking overall resources
+    kubectl get all
+
 checking successful deployment:
     kubectl get pods -o wide
+or 
+    kubectl get deployments
+
+checking endpoints:
+    kubectl get endpoints
+Expected: app2 has 3, other apps have 1 
 
 goal:
     3 Deployments, one per app, each with a matching Service
@@ -33,12 +42,12 @@ specific info about a pod:
 pod logs:
     kubectl logs <pod-name>
 
-accessing app3 (default) in a browser:
+accessing app3 (default) in a browser in ssh:
     http://192.168.56.110:80
     --> bare IP access always lands on app3, because no Host header matches app1.com/app2.com,
         so Ingress falls through to the default backend
 
-accessing a specific app in the terminal via its virtual hostname:
+accessing a specific app in the terminal via its virtual hostname in ssh:
     curl -H "Host: app1.com" http://192.168.56.110:80
     --> curl and the browser method are two independent, alternative ways of setting the
         same Host header -- not used together
