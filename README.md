@@ -241,3 +241,8 @@ curl -k https://192.168.56.110:6443/version
 
 - YouTube Playlist for Vagrant: https://www.youtube.com/playlist?list=PLhW3qG5bs-L9S272lwi9encQOL9nMOnRa
 - Kubernetes for beginners: https://www.youtube.com/watch?v=s_o8dwzRlu4
+
+
+
+NEW INFO: 
+loading the vmware daemon after laptop shut down: sudo launchctl load -w /Library/LaunchDaemons/com.vagrant.vagrant-vmware-utility.plist 
