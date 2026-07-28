@@ -54,7 +54,15 @@ from Ingress routing (deciding WHICH app/Service a request goes to, based on Hos
 
 Plan:
     1. Create one file per app (Deployment + Service) in p2/confs/: app<id>.yaml
+        --> for the Deployment use :
+            kubectl create deployment app<id> --image=nginx --dry-run=client -o yaml
+            for app2:
+                kubectl create deployment app<id> --image=nginx --replicas=3 --dry-run=client -o yaml
+        --> for the Service use : 
+            kubectl expose deployment app<id> --port=80 --target-port=80 --type=ClusterIP --dry-run=client -o yaml
+        and combine both results in one file 
         --> spec.replicas + spec.template in the Deployment drive the auto-managed ReplicaSet
+        1.1. Make the nginx version differentiable for each app 
     2. Create a single Ingress manifest for the whole cluster in p2/confs/: ingress.yaml
     3. Add the command to apply the confs manifests in the provision script
     4. vagrant up
