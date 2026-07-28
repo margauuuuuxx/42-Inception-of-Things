@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
         path: "scripts/provision_S.sh"
 
         machine.vm.provider "vmware_desktop" do |vmware|
-            vmware.memory = 512
+            vmware.memory = 1024
             vmware.cpus = 1
             vmware.vmx["displayName"] = "marloncoS"
         end

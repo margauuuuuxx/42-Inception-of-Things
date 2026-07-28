@@ -48,4 +48,18 @@ sed -i 's/127.0.0.1/192.168.56.110/g' /home/vagrant/.kube/config
 chown -R vagrant:vagrant /home/vagrant/.kube
 
 
-echo "S: K3s server ready !"
+echo "K3s server ready !"
+
+
+echo "Waiting for K3s API to be ready..."
+
+until kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get nodes | grep -q " Ready"; do
+    sleep 2
+done
+
+
+echo "Applying application manifests..."
+
+kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml apply -f /vagrant/confs/
+
+echo "Manifests successfully applied !"
