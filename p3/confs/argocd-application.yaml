@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wil-playground
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    # TODO: replace with your actual public GitHub repo URL
+    # (must contain a group member's login, e.g. huguo-iot)
+    repoURL: https://github.com/margauuuuuxx/42-Inception-of-Things.git
+    targetRevision: HEAD
+    path: p3/confs/manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+
+  syncPolicy:
+    automated:
+      prune: true       # remove resources that were deleted from Git
+      selfHeal: true     # revert manual cluster changes back to match Git
+    syncOptions:
+      - CreateNamespace=false   # namespace already created by setup.sh
